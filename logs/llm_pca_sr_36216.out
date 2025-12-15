@@ -1,0 +1,26 @@
+==================================
+PCA + SR Experiment
+==================================
+Job ID: 36216
+Node: sw-amp01
+Project Dir: /cephfs/store/gr-mc2473/eszt2/LLM_PCA_project/LLM_PCA
+==================================
+Running 1 combinations of parameters
+PCA_COMPS_I: 32
+PCA_COMPS_O: 8
+MAX_CHARS: 750000
+==================================
+
+==================================
+Run 1/1
+PCA_COMPS_I=32, PCA_COMPS_O=8, MAX_CHARS=750000
+==================================
+Running on HPC - using cephfs cache directory
+ERROR: Experiment failed with exit code 1
+Continuing to next combination...
+
+==================================
+All experiments completed!
+==================================
+Generated results in: experiment5/
+No result files found

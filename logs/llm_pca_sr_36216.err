@@ -1,0 +1,6 @@
+/cephfs/store/gr-mc2473/eszt2/venv/lib/python3.10/site-packages/transformers/utils/hub.py:110: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/cephfs/store/gr-mc2473/eszt2/LLM_PCA_project/LLM_PCA/experiment5.py", line 20, in <module>
+    from symtorch import *
+ModuleNotFoundError: No module named 'symtorch'

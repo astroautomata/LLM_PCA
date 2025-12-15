@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=llm_pca
-#SBATCH --output=logs/llm_pca_%j.out
-#SBATCH --error=logs/llm_pca_%j.err
+#SBATCH --job-name=llm_pca_sr
+#SBATCH --output=logs/llm_pca_sr_%j.out
+#SBATCH --error=logs/llm_pca_sr_%j.err
 #SBATCH --time=12:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
@@ -33,8 +33,8 @@ echo "=================================="
 source /cephfs/store/gr-mc2473/eszt2/venv/bin/activate
 
 # Define parameter ranges
-PCA_COMPS_I=(16 32 64 128)
-PCA_COMPS_O=(8 16)
+PCA_COMPS_I=(32)
+PCA_COMPS_O=(8)
 MAX_CHARS=750000
 
 # Total number of combinations
