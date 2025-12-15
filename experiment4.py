@@ -221,7 +221,7 @@ for layer in layers:
         with open(pca_output_path, 'rb') as f:
             pca_models[layer]['output'] = pickle.load(f)
         print(f"  Output PCA loaded. Explained variance ratio sum: {pca_models[layer]['output'].explained_variance_ratio_.sum():.4f}")
-        experimental_results[f"pca_layer{layer}"]["output_explained_var_ratio"] = pca_models[layer]['output'].explained_variance_ratio_.sum()
+        experimental_results[f"pca_layer{layer}"]["output_explained_var_ratio"] = float(pca_models[layer]['output'].explained_variance_ratio_.sum())
     else:
         print(f"Training OUTPUT PCA for layer {layer}")
         X_output = data[f'layer{layer}']['outputs'].numpy()
@@ -234,7 +234,7 @@ for layer in layers:
         print(f"  Output PCA saved. Explained variance: {explained_var_ratio:.4f}")
 
         pca_models[layer]['output'] = pca_output
-        experimental_results[f"pca_layer{layer}"]["output_explained_var_ratio"] = explained_var_ratio
+        experimental_results[f"pca_layer{layer}"]["output_explained_var_ratio"] = float(explained_var_ratio)
 
     # Train/load PCA for INPUTS
     pca_input_path = f'{results_location}/pca_input_layer{layer}.pkl'
@@ -243,7 +243,7 @@ for layer in layers:
         with open(pca_input_path, 'rb') as f:
             pca_models[layer]['input'] = pickle.load(f)
         print(f"  Input PCA loaded. Explained variance ratio sum: {pca_models[layer]['input'].explained_variance_ratio_.sum():.4f}")
-        experimental_results[f"pca_layer{layer}"]["input_explained_var_ratio"] = pca_models[layer]['input'].explained_variance_ratio_.sum()
+        experimental_results[f"pca_layer{layer}"]["input_explained_var_ratio"] = float(pca_models[layer]['input'].explained_variance_ratio_.sum())
     else:
         print(f"Training INPUT PCA for layer {layer}")
         X_input = data[f'layer{layer}']['inputs'].numpy()
@@ -256,7 +256,7 @@ for layer in layers:
         print(f"  Input PCA saved. Explained variance: {explained_var_ratio:.4f}")
 
         pca_models[layer]['input'] = pca_input
-        experimental_results[f"pca_layer{layer}"]["input_explained_var_ratio"] = explained_var_ratio
+        experimental_results[f"pca_layer{layer}"]["input_explained_var_ratio"] = float(explained_var_ratio)
 
 # Create intervention hooks for multiple layers
 def make_mlp_input_intervention_hook(layer_num):
