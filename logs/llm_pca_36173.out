@@ -1,0 +1,158 @@
+==================================
+Running PCA on LLM experiment
+==================================
+Job ID: 36173
+Node: sw-amp01
+Project Dir: /cephfs/store/gr-mc2473/eszt2/LLM_PCA_project/LLM_PCA
+==================================
+Running 1 combinations of parameters
+PCA_COMPS_I: 16
+PCA_COMPS_O: 64
+MAX_CHARS: 750000
+==================================
+
+==================================
+Run 1/1
+PCA_COMPS_I=16, PCA_COMPS_O=64, MAX_CHARS=750000
+==================================
+Running on HPC - using cephfs cache directory
+Running on HPC - using cephfs cache directory
+Loading tokenizer for Qwen/Qwen2.5-1.5B-Instruct...
+Model loaded successfully!
+Model device: cuda
+Model dtype: torch.float32
+Running baseline and collecting activations
+Running model no intervention
+Processing 177557 tokens in 174 chunks of 1024 tokens each
+Processed chunk 10/174
+Processed chunk 20/174
+Processed chunk 30/174
+Processed chunk 40/174
+Processed chunk 50/174
+Processed chunk 60/174
+Processed chunk 70/174
+Processed chunk 80/174
+Processed chunk 90/174
+Processed chunk 100/174
+Processed chunk 110/174
+Processed chunk 120/174
+Processed chunk 130/174
+Processed chunk 140/174
+Processed chunk 150/174
+Processed chunk 160/174
+Processed chunk 170/174
+Perplexity on train set: 10.7387
+Processing 179542 tokens in 176 chunks of 1024 tokens each
+Processed chunk 10/176
+Processed chunk 20/176
+Processed chunk 30/176
+Processed chunk 40/176
+Processed chunk 50/176
+Processed chunk 60/176
+Processed chunk 70/176
+Processed chunk 80/176
+Processed chunk 90/176
+Processed chunk 100/176
+Processed chunk 110/176
+Processed chunk 120/176
+Processed chunk 130/176
+Processed chunk 140/176
+Processed chunk 150/176
+Processed chunk 160/176
+Processed chunk 170/176
+Perplexity on val set: 10.6186
+Layer 7 - Inputs: torch.Size([177557, 1536]), Outputs: torch.Size([177557, 1536])
+Layer 14 - Inputs: torch.Size([177557, 1536]), Outputs: torch.Size([177557, 1536])
+Layer 21 - Inputs: torch.Size([177557, 1536]), Outputs: torch.Size([177557, 1536])
+Training OUTPUT PCA for layer 7
+  Output shape: (177557, 1536)
+  Output PCA saved. Explained variance: 0.3036
+Training INPUT PCA for layer 7
+  Input shape: (177557, 1536)
+  Input PCA saved. Explained variance: 0.2479
+Training OUTPUT PCA for layer 14
+  Output shape: (177557, 1536)
+  Output PCA saved. Explained variance: 0.3456
+Training INPUT PCA for layer 14
+  Input shape: (177557, 1536)
+  Input PCA saved. Explained variance: 0.2374
+Training OUTPUT PCA for layer 21
+  Output shape: (177557, 1536)
+  Output PCA saved. Explained variance: 0.3283
+Training INPUT PCA for layer 21
+  Input shape: (177557, 1536)
+  Input PCA saved. Explained variance: 0.3168
+Running forward pass with PCA intervention
+Processing 177557 tokens in 174 chunks of 1024 tokens each
+Processed chunk 10/174
+Processed chunk 20/174
+Processed chunk 30/174
+Processed chunk 40/174
+Processed chunk 50/174
+Processed chunk 60/174
+Processed chunk 70/174
+Processed chunk 80/174
+Processed chunk 90/174
+Processed chunk 100/174
+Processed chunk 110/174
+Processed chunk 120/174
+Processed chunk 130/174
+Processed chunk 140/174
+Processed chunk 150/174
+Processed chunk 160/174
+Processed chunk 170/174
+Perplexity on train set: 15.7214
+Processing 179542 tokens in 176 chunks of 1024 tokens each
+Processed chunk 10/176
+Processed chunk 20/176
+Processed chunk 30/176
+Processed chunk 40/176
+Processed chunk 50/176
+Processed chunk 60/176
+Processed chunk 70/176
+Processed chunk 80/176
+Processed chunk 90/176
+Processed chunk 100/176
+Processed chunk 110/176
+Processed chunk 120/176
+Processed chunk 130/176
+Processed chunk 140/176
+Processed chunk 150/176
+Processed chunk 160/176
+Processed chunk 170/176
+Perplexity on val set: 15.1533
+
+============================================================
+EXPERIMENT 4 COMPLETE
+============================================================
+
+Experimental Setup:
+  Layers intervened: [7, 14, 21]
+  PCA components (input): 16
+  PCA components (output): 64
+
+Baseline Perplexity:
+  Train: 10.7387
+  Val:   10.6186
+
+Intervened Perplexity:
+  Train: 15.7214
+  Val:   15.1533
+
+Perplexity Change:
+  Train: 4.9827
+  Val:   4.5347
+
+Results saved to: experiment4_testing/layers_7_14_21/max_chars750000/pca_comps_I16_O64/experimental_results.json
+
+Total Runtime: 0h 3m 12.74s
+============================================================
+✓ Experiment completed successfully
+
+==================================
+All experiments completed!
+==================================
+Generated results in: experiment4_testing/
+-rw-r--r-- 1 eszt2 swirles-gr-mc2473 807 Dec 15 12:08 experiment4_testing/layers_7_14_21/max_chars750000/pca_comps_I16_O64/experimental_results.json
+-rw-r--r-- 1 eszt2 swirles-gr-mc2473 802 Dec 13 17:49 experiment4_testing/layers_7_14_21/max_chars500000/pca_comps_I256_O256/experimental_results.json
+-rw-r--r-- 1 eszt2 swirles-gr-mc2473 801 Dec 15 11:39 experiment4_testing/layers_7_14_21/max_chars10000/pca_comps_I16_O64/experimental_results.json

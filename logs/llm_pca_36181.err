@@ -1,0 +1,5 @@
+/cephfs/store/gr-mc2473/eszt2/venv/lib/python3.10/site-packages/transformers/utils/hub.py:110: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+Token indices sequence length is longer than the specified maximum sequence length for this model (351183 > 131072). Running this sequence through the model will result in indexing errors
+/var/spool/slurmd/job36181/slurm_script: line 53: 2853994 Killed                  python3 experiment4.py $pca_i $pca_o --max-chars $MAX_CHARS
+[2025-12-15T12:49:51.418] error: Detected 1 oom_kill event in StepId=36181.batch. Some of the step tasks have been OOM Killed.

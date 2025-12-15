@@ -1,0 +1,27 @@
+==================================
+Running PCA on LLM experiment
+==================================
+Job ID: 36181
+Node: sw-amp01
+Project Dir: /cephfs/store/gr-mc2473/eszt2/LLM_PCA_project/LLM_PCA
+==================================
+Running 1 combinations of parameters
+PCA_COMPS_I: 16
+PCA_COMPS_O: 64
+MAX_CHARS: 1500000
+==================================
+
+==================================
+Run 1/1
+PCA_COMPS_I=16, PCA_COMPS_O=64, MAX_CHARS=1500000
+==================================
+ERROR: Experiment failed with exit code 137
+Continuing to next combination...
+
+==================================
+All experiments completed!
+==================================
+Generated results in: experiment4_testing/
+-rw-r--r-- 1 eszt2 swirles-gr-mc2473 807 Dec 15 12:08 experiment4_testing/layers_7_14_21/max_chars750000/pca_comps_I16_O64/experimental_results.json
+-rw-r--r-- 1 eszt2 swirles-gr-mc2473 802 Dec 13 17:49 experiment4_testing/layers_7_14_21/max_chars500000/pca_comps_I256_O256/experimental_results.json
+-rw-r--r-- 1 eszt2 swirles-gr-mc2473 801 Dec 15 11:39 experiment4_testing/layers_7_14_21/max_chars10000/pca_comps_I16_O64/experimental_results.json
