@@ -1,0 +1,20 @@
+/cephfs/store/gr-mc2473/eszt2/venv/lib/python3.10/site-packages/transformers/utils/hub.py:110: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/cephfs/store/gr-mc2473/eszt2/LLM_PCA_project/LLM_PCA/experiment4.py", line 38, in <module>
+    model, tokenizer = load_qwen_model()
+  File "/cephfs/store/gr-mc2473/eszt2/LLM_PCA_project/LLM_PCA/load_qwen.py", line 43, in load_qwen_model
+    model = model.to(device)
+  File "/cephfs/store/gr-mc2473/eszt2/venv/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4343, in to
+    return super().to(*args, **kwargs)
+  File "/cephfs/store/gr-mc2473/eszt2/venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1371, in to
+    return self._apply(convert)
+  File "/cephfs/store/gr-mc2473/eszt2/venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 930, in _apply
+    module._apply(fn)
+  File "/cephfs/store/gr-mc2473/eszt2/venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 930, in _apply
+    module._apply(fn)
+  File "/cephfs/store/gr-mc2473/eszt2/venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 957, in _apply
+    param_applied = fn(param)
+  File "/cephfs/store/gr-mc2473/eszt2/venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1357, in convert
+    return t.to(
+RuntimeError: PyTorch is not linked with support for mps devices

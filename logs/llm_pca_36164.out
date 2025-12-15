@@ -1,0 +1,28 @@
+==================================
+Running PCA on LLM experiment
+==================================
+Job ID: 36164
+Node: sw-amp01
+Project Dir: /cephfs/store/gr-mc2473/eszt2/LLM_PCA_project/LLM_PCA
+==================================
+Running 1 combinations of parameters
+PCA_COMPS_I: 16
+PCA_COMPS_O: 64
+MAX_CHARS: 10000
+==================================
+
+==================================
+Run 1/1
+PCA_COMPS_I=16, PCA_COMPS_O=64, MAX_CHARS=10000
+==================================
+Running on HPC - using cephfs cache directory
+Running on HPC - using cephfs cache directory
+Loading tokenizer for Qwen/Qwen2.5-1.5B-Instruct...
+ERROR: Experiment failed with exit code 1
+Continuing to next combination...
+
+==================================
+All experiments completed!
+==================================
+Generated results in: experiment4_testing/
+-rw-r--r-- 1 eszt2 swirles-gr-mc2473 802 Dec 13 17:49 experiment4_testing/layers_7_14_21/max_chars500000/pca_comps_I256_O256/experimental_results.json
