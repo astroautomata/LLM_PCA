@@ -29,10 +29,8 @@ echo "Node: $SLURMD_NODENAME"
 echo "Project Dir: $PROJECT_DIR"
 echo "=================================="
 
-# Load Python/conda environment if needed
-# Uncomment and modify the line below if you need to activate a conda environment
-# module load anaconda3
-# source activate your_env_name
+# Activate virtual environment
+source /cephfs/store/gr-mc2473/eszt2/venv/bin/activate
 
 # Define parameter ranges
 PCA_COMPS_I=(16)
@@ -61,7 +59,7 @@ for pca_i in "${PCA_COMPS_I[@]}"; do
         echo "=================================="
 
         # Run the experiment
-        python experiment4.py $pca_i $pca_o --max-chars $MAX_CHARS
+        python3 experiment4.py $pca_i $pca_o --max-chars $MAX_CHARS
 
         EXIT_CODE=$?
         if [ $EXIT_CODE -ne 0 ]; then
