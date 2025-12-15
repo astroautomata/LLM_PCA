@@ -35,7 +35,7 @@ source /cephfs/store/gr-mc2473/eszt2/venv/bin/activate
 # Define parameter ranges
 PCA_COMPS_I=(16)
 PCA_COMPS_O=(64)
-MAX_CHARS=10000
+# MAX_CHARS=10000
 
 # Total number of combinations
 TOTAL_RUNS=$((${#PCA_COMPS_I[@]} * ${#PCA_COMPS_O[@]}))
@@ -44,7 +44,7 @@ CURRENT_RUN=0
 echo "Running $TOTAL_RUNS combinations of parameters"
 echo "PCA_COMPS_I: ${PCA_COMPS_I[@]}"
 echo "PCA_COMPS_O: ${PCA_COMPS_O[@]}"
-echo "MAX_CHARS: $MAX_CHARS"
+echo "Using full dataset (no MAX_CHARS limit)"
 echo "=================================="
 echo ""
 
@@ -55,12 +55,12 @@ for pca_i in "${PCA_COMPS_I[@]}"; do
 
         echo "=================================="
         echo "Run $CURRENT_RUN/$TOTAL_RUNS"
-        echo "PCA_COMPS_I=$pca_i, PCA_COMPS_O=$pca_o, MAX_CHARS=$MAX_CHARS"
+        echo "PCA_COMPS_I=$pca_i, PCA_COMPS_O=$pca_o (full dataset)"
         echo "=================================="
 
         # Run the experiment
-        python3 experiment4.py $pca_i $pca_o --max-chars $MAX_CHARS
-
+        # python3 experiment4.py $pca_i $pca_o --max-chars $MAX_CHARS
+        python3 experiment4.py $pca_i $pca_o
         EXIT_CODE=$?
         if [ $EXIT_CODE -ne 0 ]; then
             echo "ERROR: Experiment failed with exit code $EXIT_CODE"
