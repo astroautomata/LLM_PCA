@@ -34,7 +34,7 @@ source /cephfs/store/gr-mc2473/eszt2/venv/bin/activate
 
 # Define parameter ranges
 PCA_COMPS_I=(16 32 64 128)
-PCA_COMPS_O=(32 64 128 256)
+PCA_COMPS_O=(8 16)
 MAX_CHARS=750000
 
 # Total number of combinations
