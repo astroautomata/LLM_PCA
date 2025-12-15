@@ -1,0 +1,64 @@
+==================================
+Running PCA on LLM experiment
+==================================
+Job ID: 36165
+Node: sw-amp01
+Project Dir: /cephfs/store/gr-mc2473/eszt2/LLM_PCA_project/LLM_PCA
+==================================
+Running 1 combinations of parameters
+PCA_COMPS_I: 16
+PCA_COMPS_O: 64
+MAX_CHARS: 10000
+==================================
+
+==================================
+Run 1/1
+PCA_COMPS_I=16, PCA_COMPS_O=64, MAX_CHARS=10000
+==================================
+Running on HPC - using cephfs cache directory
+Running on HPC - using cephfs cache directory
+Loading tokenizer for Qwen/Qwen2.5-1.5B-Instruct...
+Model loaded successfully!
+Model device: cuda
+Model dtype: torch.float32
+Running baseline and collecting activations
+Running model no intervention
+Processing 2602 tokens in 3 chunks of 1024 tokens each
+Perplexity on train set: 9.1537
+Processing 2542 tokens in 3 chunks of 1024 tokens each
+Perplexity on val set: 10.4537
+Layer 7 - Inputs: torch.Size([2602, 1536]), Outputs: torch.Size([2602, 1536])
+Layer 14 - Inputs: torch.Size([2602, 1536]), Outputs: torch.Size([2602, 1536])
+Layer 21 - Inputs: torch.Size([2602, 1536]), Outputs: torch.Size([2602, 1536])
+Training OUTPUT PCA for layer 7
+  Output shape: (2602, 1536)
+  Output PCA saved. Explained variance: 0.5032
+Training INPUT PCA for layer 7
+  Input shape: (2602, 1536)
+  Input PCA saved. Explained variance: 0.3693
+Training OUTPUT PCA for layer 14
+  Output shape: (2602, 1536)
+  Output PCA saved. Explained variance: 0.4457
+Training INPUT PCA for layer 14
+  Input shape: (2602, 1536)
+  Input PCA saved. Explained variance: 0.3019
+Training OUTPUT PCA for layer 21
+  Output shape: (2602, 1536)
+  Output PCA saved. Explained variance: 0.5104
+Training INPUT PCA for layer 21
+  Input shape: (2602, 1536)
+  Input PCA saved. Explained variance: 0.4149
+Running forward pass with PCA intervention
+Processing 2602 tokens in 3 chunks of 1024 tokens each
+Perplexity on train set: 11.6421
+Processing 2542 tokens in 3 chunks of 1024 tokens each
+Perplexity on val set: 13.8191
+ERROR: Experiment failed with exit code 1
+Continuing to next combination...
+
+==================================
+All experiments completed!
+==================================
+Generated results in: experiment4_testing/
+-rw-r--r-- 1 eszt2 swirles-gr-mc2473 802 Dec 13 17:49 experiment4_testing/layers_7_14_21/max_chars500000/pca_comps_I256_O256/experimental_results.json
+-rw-r--r-- 1 eszt2 swirles-gr-mc2473 311 Dec 15 11:30 experiment4_testing/layers_7_14_21/max_chars10000/pca_comps_I16_O64/experimental_results.json

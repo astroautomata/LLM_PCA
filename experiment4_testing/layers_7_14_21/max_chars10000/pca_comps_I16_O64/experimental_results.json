@@ -1,0 +1,15 @@
+{
+  "layers": [
+    7,
+    14,
+    21
+  ],
+  "pca_comps_I": 16,
+  "pca_comps_O": 64,
+  "max_length": 1024,
+  "num_train_tokens": 2602,
+  "baseline_perplexity_train": 9.15369825618905,
+  "num_val_tokens": 2542,
+  "baseline_perplexity_val": 10.453664566003102,
+  "pca_layer7": {
+    "output_explained_var_ratio": 
