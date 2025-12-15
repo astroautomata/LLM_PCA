@@ -1,0 +1,17 @@
+==================================
+Running PCA on LLM experiment
+==================================
+Job ID: 36171
+Node: sw-amp01
+Project Dir: /cephfs/store/gr-mc2473/eszt2/LLM_PCA_project/LLM_PCA
+==================================
+Running 1 combinations of parameters
+PCA_COMPS_I: 16
+PCA_COMPS_O: 64
+Using full dataset (no MAX_CHARS limit)
+==================================
+
+==================================
+Run 1/1
+PCA_COMPS_I=16, PCA_COMPS_O=64 (full dataset)
+==================================
