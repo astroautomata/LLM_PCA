@@ -34,8 +34,16 @@ args = parser.parse_args()
 # Start timing
 start_time = time.time()
 
+# Determine device - use CUDA on HPC, MPS on Mac
+if torch.cuda.is_available():
+    device = "cuda"
+elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+    device = "mps"
+else:
+    device = "cpu"
+
 #load the model
-model, tokenizer = load_qwen_model()
+model, tokenizer = load_qwen_model(device=device)
 
 #load the dataset
 wikitext = load_dataset("Salesforce/wikitext", "wikitext-2-v1")
