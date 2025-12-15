@@ -1,0 +1,29 @@
+{
+  "layers": [
+    7,
+    14,
+    21
+  ],
+  "pca_comps_I": 32,
+  "pca_comps_O": 64,
+  "max_length": 1024,
+  "num_train_tokens": 177557,
+  "baseline_perplexity_train": 10.738690285873622,
+  "num_val_tokens": 179542,
+  "baseline_perplexity_val": 10.618621775614777,
+  "pca_layer7": {
+    "output_explained_var_ratio": 0.3036024570465088,
+    "input_explained_var_ratio": 0.3210272789001465
+  },
+  "pca_layer14": {
+    "output_explained_var_ratio": 0.34563589096069336,
+    "input_explained_var_ratio": 0.30318403244018555
+  },
+  "pca_layer21": {
+    "output_explained_var_ratio": 0.3282558023929596,
+    "input_explained_var_ratio": 0.4018571674823761
+  },
+  "intervened_perplexity_train": 15.058351243195395,
+  "intervened_perplexity_val": 14.461307970603258,
+  "total_runtime_minutes": 3.189437941710154
+}
