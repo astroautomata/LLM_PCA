@@ -1,0 +1,15 @@
+{
+  "layers": [
+    7,
+    14,
+    21
+  ],
+  "max_length": 1024,
+  "num_train_tokens": 177557,
+  "baseline_perplexity_train": 10.738852010797933,
+  "num_val_tokens": 179542,
+  "baseline_perplexity_val": 10.618594515996778,
+  "intervened_perplexity_train": 18.860494171853315,
+  "intervened_perplexity_val": 17.590163373507774,
+  "total_runtime_minutes": 4.87997260093689
+}
