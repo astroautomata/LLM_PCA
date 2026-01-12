@@ -169,6 +169,8 @@ def load_models(results_dir, device):
 
     return model, tokenizer, aux_models
 
+from load_other_models import load_hf_model
+
 
 def to_neural(model, layers):
     for layer in layers:
@@ -229,7 +231,7 @@ def to_symbolic(model, aux_models, layers):
 
 
 def run_benchmarks(
-    model, tokenizer, aux_models,
+    model, tokenizer,
     train_text, val_text,
     device, num_warmup, num_iterations
 ):
@@ -333,6 +335,11 @@ def parse_args():
         '--num-warmup', type=int, default=5,
         help='Number of warmup iterations (default: 5)'
     )
+
+    parser.add_argument(
+        '--model_name', type = str, default='original' # this runs the benchmarking for the hybrid symbolic model and usual qwen2.5-1.5bn
+    )
+
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
         '--cpu-only', action='store_true', help='Only benchmark on CPU'
@@ -347,6 +354,8 @@ def parse_args():
 def main():
     parser, args = parse_args()
     metadata = load_experimental_results(args.results_dir, verbose=True)
+
+    model_name = args.model_name
 
     devices = []
     if not args.gpu_only:
@@ -365,37 +374,78 @@ def main():
     train_text, val_text = load_wikitext(args.max_chars, args.seed)
     print()
 
+    # Create experiment7 directory if it doesn't exist
+    experiment7_dir = "experiment7"
+    os.makedirs(experiment7_dir, exist_ok=True)
+
     for device in devices:
         print(f"{'='*60}")
         print(f"Benchmarking on {device.upper()}")
         print(f"{'='*60}\n")
 
         print(f"Loading models on {device}")
-        model, tokenizer, aux_models = load_models(args.results_dir, device)
-        print()
 
-        print(f"[{device.upper()}] BASELINE (no intervention)")
-        run_benchmarks(
-            model, tokenizer, aux_models,
-            train_text, val_text,
-            device, args.num_warmup, args.num_iterations
-        )
+        if model_name == "original": # run the benchmarking for all of these
+            model, tokenizer, aux_models = load_models(args.results_dir, device)
+            print()
 
-        print(f"[{device.upper()}] SKIP MLP (forward pass does nothing)")
-        to_skip(model, metadata["layers"])
-        run_benchmarks(
-            model, tokenizer, aux_models,
-            train_text, val_text,
-            device, args.num_warmup, args.num_iterations
-        )
+            print(f"[{device.upper()}] BASELINE (no intervention)")
+            res = run_benchmarks(
+                model, tokenizer,
+                train_text, val_text,
+                device, args.num_warmup, args.num_iterations
+            )
 
-        print(f"[{device.upper()}] SYMBOLIC (with symbolic intervention)")
-        to_symbolic(model, aux_models, metadata["layers"])
-        run_benchmarks(
-            model, tokenizer, aux_models,
-            train_text, val_text,
-            device, args.num_warmup, args.num_iterations
-        )
+            # Save results
+            results_file = os.path.join(experiment7_dir, f"original_model_baseline_{device}.json")
+            with open(results_file, 'w') as f:
+                json.dump(res, f, indent=2)
+            print(f"Results saved to {results_file}\n")
+
+            print(f"[{device.upper()}] SKIP MLP (forward pass does nothing)")
+            to_skip(model, metadata["layers"])
+            res = run_benchmarks(
+                model, tokenizer,
+                train_text, val_text,
+                device, args.num_warmup, args.num_iterations
+            )
+
+            # Save results
+            results_file = os.path.join(experiment7_dir, f"original_model_skip_mlp_{device}.json")
+            with open(results_file, 'w') as f:
+                json.dump(res, f, indent=2)
+            print(f"Results saved to {results_file}\n")
+
+            print(f"[{device.upper()}] SYMBOLIC (with symbolic intervention)")
+            to_symbolic(model, aux_models, metadata["layers"])
+            res = run_benchmarks(
+                model, tokenizer,
+                train_text, val_text,
+                device, args.num_warmup, args.num_iterations
+            )
+
+            # Save results
+            results_file = os.path.join(experiment7_dir, f"original_model_symbolic_{device}.json")
+            with open(results_file, 'w') as f:
+                json.dump(res, f, indent=2)
+            print(f"Results saved to {results_file}\n")
+
+        elif model_name == 'something_else':
+            model, tokenizer= load_hf_model(device, model_name)
+            res = run_benchmarks(
+                model, tokenizer,
+                train_text, val_text,
+                device, args.num_warmup, args.num_iterations
+            )
+
+            # Save results
+            results_file = os.path.join(experiment7_dir, f"{model_name}_baseline_{device}.json")
+            with open(results_file, 'w') as f:
+                json.dump(res, f, indent=2)
+            print(f"Results saved to {results_file}\n")
+
+
+
 
 
 if __name__ == "__main__":
