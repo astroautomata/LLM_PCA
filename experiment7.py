@@ -10,6 +10,16 @@ Metrics measured:
 - Performance on CPU vs GPU (if available)
 
 Usage: python experiment7.py <results_dir>
+
+MODELS THAT WE USE IN THIS BENCHMARKING:
+
+"Qwen/Qwen2.5-0.5B-Instruct"
+"Qwen/Qwen2.5-1.5B-Instruct"
+"Qwen/Qwen2.5-3B-Instruct"
+"meta-llama/Llama-3.2-1B-Instruct"
+"meta-llama/Llama-3.2-3B-Instruct"
+"HuggingFaceTB/SmolLM3-3B-Instruct"
+
 """
 import argparse
 import contextlib
@@ -124,15 +134,15 @@ def get_perplexity(model, tokenizer, text, max_length=1024, device="cpu"):
     return perplexity
 
 
-def load_pca_models(results_dir, layers, device):
+def load_pca_models(results_dir, layers, device, dtype=torch.float32):
     ret = {}
     for layer in layers:
         ret[layer] = {}
-        for dtype in ("input", "output"):
-            path = os.path.join(results_dir, f"pca_{dtype}_layer{layer}.pkl")
+        for pca_type in ("input", "output"):
+            path = os.path.join(results_dir, f"pca_{pca_type}_layer{layer}.pkl")
             with open(path, "rb") as fd:
-                ret[layer][dtype] = torch_pca.TorchPCA(
-                    pickle.load(fd), device=device, dtype=torch.float32
+                ret[layer][pca_type] = torch_pca.TorchPCA(
+                    pickle.load(fd), device=device, dtype=dtype
                 )
     return ret
 
@@ -161,7 +171,11 @@ def load_models(results_dir, device):
     n_pca_outputs = metadata["pca_comps_O"]
 
     model, tokenizer = load_qwen_model(device=device)
-    pca_models = load_pca_models(results_dir, layers, device=device)
+
+    # Get model's dtype to ensure consistency
+    model_dtype = next(model.parameters()).dtype
+
+    pca_models = load_pca_models(results_dir, layers, device=device, dtype=model_dtype)
     sym_models = load_symbolic_models(
         results_dir, layers, n_pca_inputs, n_pca_outputs
     )
@@ -233,13 +247,16 @@ def to_symbolic(model, aux_models, layers):
 def run_benchmarks(
     model, tokenizer,
     train_text, val_text,
-    device, num_warmup, num_iterations
+    device, num_warmup, num_iterations, 
+    compute_perplexity = True,
 ):
-    print(f"  Computing perplexity (sanity check)...")
-    train_ppl = get_perplexity(model, tokenizer, train_text, device=device)
-    print(f"    Train Perplexity : {train_ppl:.4f}")
-    val_ppl = get_perplexity(model, tokenizer, val_text, device=device)
-    print(f"    Val Perplexity   : {val_ppl:.4f}")
+
+    if compute_perplexity:
+        print(f"  Computing perplexity (sanity check)...")
+        train_ppl = get_perplexity(model, tokenizer, train_text, device=device)
+        print(f"    Train Perplexity : {train_ppl:.4f}")
+        val_ppl = get_perplexity(model, tokenizer, val_text, device=device)
+        print(f"    Val Perplexity   : {val_ppl:.4f}")
 
     print(f"  Benchmarking inference speed...")
     rslt = benchmark_inference(
@@ -251,6 +268,11 @@ def run_benchmarks(
     print(f"    Avg latency : {rslt['avg_latency_ms']:.2f} ms")
     print(f"    P95 latency : {rslt['p95_latency_ms']:.2f} ms")
     print(f"    Throughput  : {rslt['tokens_per_second']:.1f} tokens/sec\n")
+
+    if compute_perplexity:
+        rslt['train_perplexity'] = train_ppl
+        rslt['val_perplexity'] = val_ppl
+
     return rslt
 
 
@@ -340,6 +362,11 @@ def parse_args():
         '--model_name', type = str, default='original' # this runs the benchmarking for the hybrid symbolic model and usual qwen2.5-1.5bn
     )
 
+    parser.add_argument(
+        '--no-compute-ppl', action='store_true',
+        help='Skip perplexity computation (only benchmark speed)'
+    )
+
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
         '--cpu-only', action='store_true', help='Only benchmark on CPU'
@@ -353,9 +380,12 @@ def parse_args():
 
 def main():
     parser, args = parse_args()
-    metadata = load_experimental_results(args.results_dir, verbose=True)
 
     model_name = args.model_name
+
+    # Only load metadata for 'original' model
+    if model_name == "original":
+        metadata = load_experimental_results(args.results_dir, verbose=True)
 
     devices = []
     if not args.gpu_only:
@@ -370,13 +400,25 @@ def main():
         parser.error("no devices available for benchmarking")
     print(f"Testing on {devices}\n")
 
-    print("Loading WikiText dataset...")
-    train_text, val_text = load_wikitext(args.max_chars, args.seed)
-    print()
+    # Only load dataset if computing perplexity
+    compute_ppl = not args.no_compute_ppl
 
-    # Create experiment7 directory if it doesn't exist
-    experiment7_dir = "experiment7"
+    if compute_ppl:
+        print("Loading WikiText dataset...")
+        train_text, val_text = load_wikitext(args.max_chars, args.seed)
+        print()
+    else:
+        # Still need val_text for inference benchmarking, but can use smaller sample
+        print("Loading WikiText dataset (validation only)...")
+        train_text, val_text = load_wikitext(args.max_chars, args.seed, verbose=False)
+        train_text = None  # Don't need training text if not computing perplexity
+
+    # Create experiment7_results directory if it doesn't exist
+    experiment7_dir = "experiment7_results"
     os.makedirs(experiment7_dir, exist_ok=True)
+
+    # Generate timestamp for unique filenames
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
 
     for device in devices:
         print(f"{'='*60}")
@@ -385,64 +427,124 @@ def main():
 
         print(f"Loading models on {device}")
 
-        if model_name == "original": # run the benchmarking for all of these
+        if model_name == "original":
+            # Create subfolder for this benchmark run
+            run_dir = os.path.join(experiment7_dir, f"original_{device}_{timestamp}")
+            os.makedirs(run_dir, exist_ok=True)
+
             model, tokenizer, aux_models = load_models(args.results_dir, device)
             print()
 
+            # Baseline
             print(f"[{device.upper()}] BASELINE (no intervention)")
             res = run_benchmarks(
                 model, tokenizer,
                 train_text, val_text,
-                device, args.num_warmup, args.num_iterations
+                device, args.num_warmup, args.num_iterations, compute_ppl
             )
 
-            # Save results
-            results_file = os.path.join(experiment7_dir, f"original_model_baseline_{device}.json")
+            # Save benchmark results
+            results_file = os.path.join(run_dir, "baseline_benchmark.json")
+            benchmark_data = {k: v for k, v in res.items() if k not in ['train_perplexity', 'val_perplexity']}
             with open(results_file, 'w') as f:
-                json.dump(res, f, indent=2)
-            print(f"Results saved to {results_file}\n")
+                json.dump(benchmark_data, f, indent=2)
+            print(f"Benchmark results saved to {results_file}")
 
+            # Save perplexity results if computed
+            if compute_ppl:
+                ppl_file = os.path.join(run_dir, "baseline_perplexity.json")
+                ppl_data = {
+                    'train_perplexity': res['train_perplexity'],
+                    'val_perplexity': res['val_perplexity']
+                }
+                with open(ppl_file, 'w') as f:
+                    json.dump(ppl_data, f, indent=2)
+                print(f"Perplexity results saved to {ppl_file}")
+            print()
+
+            # Skip MLP
             print(f"[{device.upper()}] SKIP MLP (forward pass does nothing)")
             to_skip(model, metadata["layers"])
             res = run_benchmarks(
                 model, tokenizer,
                 train_text, val_text,
-                device, args.num_warmup, args.num_iterations
+                device, args.num_warmup, args.num_iterations, compute_ppl
             )
 
-            # Save results
-            results_file = os.path.join(experiment7_dir, f"original_model_skip_mlp_{device}.json")
+            results_file = os.path.join(run_dir, "skip_mlp_benchmark.json")
+            benchmark_data = {k: v for k, v in res.items() if k not in ['train_perplexity', 'val_perplexity']}
             with open(results_file, 'w') as f:
-                json.dump(res, f, indent=2)
-            print(f"Results saved to {results_file}\n")
+                json.dump(benchmark_data, f, indent=2)
+            print(f"Benchmark results saved to {results_file}")
 
+            if compute_ppl:
+                ppl_file = os.path.join(run_dir, "skip_mlp_perplexity.json")
+                ppl_data = {
+                    'train_perplexity': res['train_perplexity'],
+                    'val_perplexity': res['val_perplexity']
+                }
+                with open(ppl_file, 'w') as f:
+                    json.dump(ppl_data, f, indent=2)
+                print(f"Perplexity results saved to {ppl_file}")
+            print()
+
+            # Symbolic
             print(f"[{device.upper()}] SYMBOLIC (with symbolic intervention)")
             to_symbolic(model, aux_models, metadata["layers"])
             res = run_benchmarks(
                 model, tokenizer,
                 train_text, val_text,
-                device, args.num_warmup, args.num_iterations
+                device, args.num_warmup, args.num_iterations, compute_ppl
             )
 
-            # Save results
-            results_file = os.path.join(experiment7_dir, f"original_model_symbolic_{device}.json")
+            results_file = os.path.join(run_dir, "symbolic_benchmark.json")
+            benchmark_data = {k: v for k, v in res.items() if k not in ['train_perplexity', 'val_perplexity']}
             with open(results_file, 'w') as f:
-                json.dump(res, f, indent=2)
-            print(f"Results saved to {results_file}\n")
+                json.dump(benchmark_data, f, indent=2)
+            print(f"Benchmark results saved to {results_file}")
 
-        elif model_name == 'something_else':
-            model, tokenizer= load_hf_model(device, model_name)
+            if compute_ppl:
+                ppl_file = os.path.join(run_dir, "symbolic_perplexity.json")
+                ppl_data = {
+                    'train_perplexity': res['train_perplexity'],
+                    'val_perplexity': res['val_perplexity']
+                }
+                with open(ppl_file, 'w') as f:
+                    json.dump(ppl_data, f, indent=2)
+                print(f"Perplexity results saved to {ppl_file}")
+            print()
+
+        else:
+            # Create subfolder for this model
+            safe_model_name = model_name.replace('/', '_')
+            run_dir = os.path.join(experiment7_dir, f"{safe_model_name}_{device}_{timestamp}")
+            os.makedirs(run_dir, exist_ok=True)
+
+            model, tokenizer = load_hf_model(device, model_name)
             res = run_benchmarks(
                 model, tokenizer,
                 train_text, val_text,
-                device, args.num_warmup, args.num_iterations
+                device, args.num_warmup, args.num_iterations, compute_ppl
             )
 
-            # Save results
-            results_file = os.path.join(experiment7_dir, f"{model_name}_baseline_{device}.json")
+            # Save benchmark results
+            results_file = os.path.join(run_dir, "benchmark.json")
+            benchmark_data = {k: v for k, v in res.items() if k not in ['train_perplexity', 'val_perplexity']}
             with open(results_file, 'w') as f:
-                json.dump(res, f, indent=2)
-            print(f"Results saved to {results_file}\n")
+                json.dump(benchmark_data, f, indent=2)
+            print(f"Benchmark results saved to {results_file}")
+
+            # Save perplexity results if computed
+            if compute_ppl:
+                ppl_file = os.path.join(run_dir, "perplexity.json")
+                ppl_data = {
+                    'train_perplexity': res['train_perplexity'],
+                    'val_perplexity': res['val_perplexity']
+                }
+                with open(ppl_file, 'w') as f:
+                    json.dump(ppl_data, f, indent=2)
+                print(f"Perplexity results saved to {ppl_file}")
+            print()
 
 
 
