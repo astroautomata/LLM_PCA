@@ -5,3 +5,6 @@ CALLABLE_QUICKSTART.md
 *.pt
 
 experiment7_results
+generate_test_outputs.py 
+generated_outputs
+model_example_outputs
