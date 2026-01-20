@@ -37,8 +37,8 @@ def generate_text(model, tokenizer, prompt, max_new_tokens=100, device="mps"):
 def main():
 
     # You change this stuff
-    prompt = "Create a short story that includes fruits and vegetables but make sure not to include bananas in this story."
-    prompt_name = "no_bananas"
+    prompt = "Write exactly two sentences explaining PCA. Do not mention the 'variance' in your description."
+    prompt_name = "PCA"
     max_tokens = 500
 
     saving_dir = "model_example_outputs"
