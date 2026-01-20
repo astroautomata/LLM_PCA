@@ -1,0 +1,6 @@
+datasets==4.4.1
+numpy==2.4.1
+scikit_learn==1.8.0
+torch==2.9.1
+torch_symbolic==2.1.2
+transformers==4.57.3
