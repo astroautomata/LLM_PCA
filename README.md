@@ -1,6 +1,6 @@
 # LLM PCA + Symbolic Regression Experiments
 
-This repository contains the code for the case study in Section 4.1 of the ICML paper **"SymTorch: A PyTorch Framework for Symbolic Distillation of Deep Neural Networks"**.
+This repository contains the code for the case study in Section 4.1 of the paper **"SymTorch: A PyTorch Framework for Symbolic Distillation of Deep Neural Networks"**.
 
 ## Paper Relevance
 
@@ -215,13 +215,4 @@ python experiment7.py <results_dir> --model_name "HuggingFaceTB/SmolLM2-1.7B-Ins
 
 ## Citation
 
-If you use this code, please cite the SymTorch paper:
-
-```bibtex
-@inproceedings{symtorch2025,
-  title={SymTorch: A PyTorch Framework for Symbolic Distillation of Deep Neural Networks},
-  author={Anonymous},
-  booktitle={International Conference on Machine Learning (ICML)},
-  year={2025}
-}
-```
+TBC!
