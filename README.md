@@ -160,7 +160,6 @@ datasets==4.4.1
 numpy==2.4.1
 scikit_learn==1.8.0
 torch==2.9.1
-torch_symbolic==2.1.2
 transformers==4.57.3
 ```
 
@@ -169,7 +168,7 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-**Note:** You also need to install SymTorch from the specific commit mentioned above, or use a compatible version.
+**Note:** You also need to install SymTorch from the specific commit mentioned above.
 
 ---
 
